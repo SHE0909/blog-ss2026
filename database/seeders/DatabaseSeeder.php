@@ -13,10 +13,10 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $u1 = User::updateOrCreate(['email' => 'cq22003@ues.edu.sv'], [
-            'name' => 'Estudiante Uno', 'password' => 'password',
+            'name' => 'cq22003', 'password' => 'password',
         ]);
-        $u2 = User::updateOrCreate(['email' => 'estudiante2@ues.edu.sv'], [
-            'name' => 'Estudiante Dos', 'password' => 'password',
+        $u2 = User::updateOrCreate(['email' => 'gb23003@ues.edu.sv'], [
+            'name' => 'gb23003', 'password' => 'password',
         ]);
 
         $cats = [];
@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
 
         $ponencia = "Tema: \nExpositor: \nIdeas centrales: \nAprendizajes: \n\n[Reemplaza con lo que realmente viste y escuchaste]";
 
-        // Cronograma oficial (itinerario SDS26 Green IoT)
+        
         $actividades = [
             ['Inauguración de la Semana de Sistemas 2026', 'Inauguración', '2026-11-16', "Lugar: Auditorio 1, 8:00 a. m.\nDescribe la ceremonia: quién habló, qué se anunció y el ambiente del evento.\n\n[Reemplaza con tu descripción real]"],
             ['Ponencia 1: Investigación aplicada en IoT para la agricultura en El Salvador', 'Ponencias', '2026-11-16', "Lugar: Auditorio 1, 10:00 a. m.\n" . $ponencia],
