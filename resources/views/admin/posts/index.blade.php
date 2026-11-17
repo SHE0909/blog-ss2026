@@ -1,39 +1,45 @@
 @extends('layouts.admin')
 @section('title', 'Entradas')
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h3>Entradas</h3>
-    <a href="{{ route('admin.posts.create') }}" class="btn btn-primary">+ Nueva entrada</a>
+<div class="page-head">
+    <div><h1>Entradas</h1><p>Crea, edita y publica las entradas de cada actividad.</p></div>
+    <div class="page-actions"><a class="btn-sds" href="{{ route('admin.posts.create') }}"><i class="bi bi-plus-lg"></i> Nueva entrada</a></div>
 </div>
-<div class="mb-3 btn-group btn-group-sm">
-    <a class="btn btn-outline-secondary" href="{{ route('admin.posts.index') }}">Todas</a>
-    <a class="btn btn-outline-secondary" href="{{ route('admin.posts.index', ['status' => 'publicado']) }}">Publicadas</a>
-    <a class="btn btn-outline-secondary" href="{{ route('admin.posts.index', ['status' => 'borrador']) }}">Borradores</a>
+
+<div class="chips mt-0">
+    <a class="chip {{ request('status') ? '' : 'is-active' }}" href="{{ route('admin.posts.index') }}">Todas</a>
+    <a class="chip {{ request('status') === 'publicado' ? 'is-active' : '' }}" href="{{ route('admin.posts.index', ['status' => 'publicado']) }}">Publicadas</a>
+    <a class="chip {{ request('status') === 'borrador' ? 'is-active' : '' }}" href="{{ route('admin.posts.index', ['status' => 'borrador']) }}">Borradores</a>
 </div>
-<div class="table-responsive">
-<table class="table table-striped align-middle bg-white">
-    <thead><tr><th>Título</th><th>Categoría</th><th>Fecha</th><th>Autores</th><th>Estado</th><th></th></tr></thead>
-    <tbody>
-    @forelse ($posts as $p)
-        <tr>
-            <td>{{ $p->title }}</td>
-            <td>{{ $p->category->name }}</td>
-            <td>{{ $p->activity_date->format('d/m/Y') }}</td>
-            <td>{{ $p->authors->pluck('name')->join(', ') }}</td>
-            <td><span class="badge text-bg-{{ $p->status === 'publicado' ? 'success' : 'warning' }}">{{ $p->status }}</span></td>
-            <td class="text-nowrap">
-                @if ($p->status === 'publicado')<a href="{{ route('blog.show', $p) }}" target="_blank" class="btn btn-sm btn-outline-secondary">Ver</a>@endif
-                <a href="{{ route('admin.posts.edit', $p) }}" class="btn btn-sm btn-outline-primary">Editar</a>
-                <form method="POST" action="{{ route('admin.posts.destroy', $p) }}" class="d-inline" onsubmit="return confirm('¿Eliminar esta entrada?')">
-                    @csrf @method('DELETE')<button class="btn btn-sm btn-outline-danger">Eliminar</button>
-                </form>
-            </td>
-        </tr>
-    @empty
-        <tr><td colspan="6" class="text-center text-muted">Sin entradas.</td></tr>
-    @endforelse
-    </tbody>
-</table>
+
+<div class="panel">
+    <div class="table-responsive">
+        <table class="table table-sds">
+            <thead><tr><th>Entrada</th><th>Fecha</th><th>Autores</th><th>Estado</th><th class="text-end">Acciones</th></tr></thead>
+            <tbody>
+            @forelse ($posts as $p)
+                <tr>
+                    <td style="min-width:260px"><a class="t-title" href="{{ route('admin.posts.edit', $p) }}">{{ $p->title }}</a><div class="t-sub">{{ $p->category->name }}</div></td>
+                    <td class="text-nowrap">{{ $p->activity_date->format('d/m/Y') }}</td>
+                    <td><span class="avatars">@foreach ($p->authors as $a)<span class="avatar" title="{{ $a->name }}">{{ mb_strtoupper(mb_substr($a->name, 0, 1)) }}</span>@endforeach</span></td>
+                    <td><span class="pill pill-{{ $p->status }}">{{ ucfirst($p->status) }}</span></td>
+                    <td>
+                        <div class="row-actions">
+                            @if ($p->status === 'publicado')<a class="btn-ghost-dark btn-icon" href="{{ route('blog.show', $p) }}" target="_blank" title="Ver en el sitio" aria-label="Ver en el sitio"><i class="bi bi-eye"></i></a>@endif
+                            <a class="btn-ghost-dark btn-icon" href="{{ route('admin.posts.edit', $p) }}" title="Editar" aria-label="Editar"><i class="bi bi-pencil"></i></a>
+                            <form method="POST" action="{{ route('admin.posts.destroy', $p) }}" onsubmit="return confirm('¿Eliminar esta entrada y sus imágenes?')">
+                                @csrf @method('DELETE')
+                                <button class="btn-danger-soft btn-icon" title="Eliminar" aria-label="Eliminar"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            @empty
+                <tr><td colspan="5" class="text-center text-muted py-5">No hay entradas con este filtro.</td></tr>
+            @endforelse
+            </tbody>
+        </table>
+    </div>
 </div>
-{{ $posts->links('pagination::bootstrap-5') }}
+<div class="mt-3 d-flex justify-content-center">{{ $posts->links('pagination::bootstrap-5') }}</div>
 @endsection

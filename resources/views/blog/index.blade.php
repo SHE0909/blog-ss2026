@@ -1,30 +1,32 @@
 @extends('layouts.app')
-@section('title', 'Entradas')
+@section('title', 'Entradas · Semana de Sistemas 2026')
 @section('content')
-<div class="container mt-4">
-    <h2 class="mb-3">Entradas</h2>
-    <form method="GET" class="row g-2 mb-3">
-        <div class="col-md-5"><input type="search" name="q" value="{{ $q }}" class="form-control" placeholder="Buscar por título o contenido..."></div>
-        <div class="col-md-4">
-            <select name="categoria" class="form-select">
-                <option value="">Todas las categorías</option>
-                @foreach ($categories as $c)
-                    <option value="{{ $c->slug }}" @selected($cat === $c->slug)>{{ $c->name }}</option>
-                @endforeach
-            </select>
+<section class="section pb-0">
+    <div class="container">
+        <h1 class="page-title">Entradas</h1>
+        <p class="text-muted mb-3">{{ $posts->total() }} {{ $posts->total() === 1 ? 'entrada publicada' : 'entradas publicadas' }}</p>
+
+        <form method="GET" action="{{ route('blog.index') }}" class="search">
+            <i class="bi bi-search"></i>
+            @if ($cat)<input type="hidden" name="categoria" value="{{ $cat }}">@endif
+            <input type="search" name="q" value="{{ $q }}" class="form-control" placeholder="Buscar por título o contenido" aria-label="Buscar entradas">
+        </form>
+
+        <div class="chips">
+            <a class="chip {{ $cat ? '' : 'is-active' }}" href="{{ route('blog.index', array_filter(['q' => $q])) }}">Todas</a>
+            @foreach ($categories as $c)
+                <a class="chip {{ $cat === $c->slug ? 'is-active' : '' }}" href="{{ route('blog.index', array_filter(['q' => $q, 'categoria' => $c->slug])) }}">{{ $c->name }}</a>
+            @endforeach
         </div>
-        <div class="col-md-3 d-flex gap-2">
-            <button class="btn btn-primary flex-fill">Buscar</button>
-            <a href="{{ route('blog.index') }}" class="btn btn-outline-secondary">Limpiar</a>
+
+        <div class="row g-4">
+            @forelse ($posts as $post)
+                @include('blog._card')
+            @empty
+                <div class="col-12"><div class="empty"><i class="bi bi-search"></i>No encontramos entradas con esa búsqueda. Prueba con otra palabra o quita el filtro de categoría.</div></div>
+            @endforelse
         </div>
-    </form>
-    <div class="row g-4">
-        @forelse ($posts as $post)
-            @include('blog._card')
-        @empty
-            <p class="text-muted">No se encontraron entradas.</p>
-        @endforelse
+        <div class="mt-4 d-flex justify-content-center">{{ $posts->links('pagination::bootstrap-5') }}</div>
     </div>
-    <div class="mt-4">{{ $posts->links('pagination::bootstrap-5') }}</div>
-</div>
+</section>
 @endsection

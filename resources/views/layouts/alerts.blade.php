@@ -1,6 +1,10 @@
-@if (session('ok'))
-    <div class="alert alert-success alert-dismissible fade show">{{ session('ok') }}<button class="btn-close" data-bs-dismiss="alert"></button></div>
-@endif
-@if (session('error'))
-    <div class="alert alert-danger alert-dismissible fade show">{{ session('error') }}<button class="btn-close" data-bs-dismiss="alert"></button></div>
+@if (session('ok') || session('error'))
+    <div class="toasts" role="status" aria-live="polite">
+        @if (session('ok'))
+            <div class="toast-sds" data-toast><i class="bi bi-check-circle-fill"></i><div>{{ session('ok') }}</div></div>
+        @endif
+        @if (session('error'))
+            <div class="toast-sds is-error" data-toast><i class="bi bi-exclamation-octagon-fill"></i><div>{{ session('error') }}</div></div>
+        @endif
+    </div>
 @endif

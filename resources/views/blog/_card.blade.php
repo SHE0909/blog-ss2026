@@ -1,16 +1,20 @@
-<div class="col-md-6 col-lg-4">
-    <div class="card h-100 shadow-sm">
-        @if ($post->image_url)
-            <img src="{{ $post->image_url }}" class="card-img-top" alt="{{ $post->title }}">
-        @endif
-        <div class="card-body d-flex flex-column">
-            <span class="badge text-bg-primary align-self-start mb-2">{{ $post->category->name }}</span>
-            <h5 class="card-title">{{ $post->title }}</h5>
-            <p class="card-text text-muted small">{{ $post->excerpt }}</p>
-            <div class="mt-auto small text-secondary">
-                {{ $post->activity_date->format('d/m/Y') }} · {{ $post->authors->pluck('name')->join(', ') }}
-            </div>
-            <a href="{{ route('blog.show', $post) }}" class="stretched-link"></a>
+<div class="col-md-6 col-xl-4">
+    <article class="post-card h-100">
+        <div class="post-card-media">
+            @if ($post->image_url)
+                <img src="{{ $post->image_url }}" alt="" loading="lazy">
+            @else
+                <div class="media-ph"><i class="bi bi-broadcast"></i></div>
+            @endif
         </div>
-    </div>
+        <div class="post-card-body">
+            <span class="tag">{{ $post->category->name }}</span>
+            <h3 class="post-card-title"><a class="stretched-link" href="{{ route('blog.show', $post) }}">{{ $post->title }}</a></h3>
+            <p class="post-card-excerpt">{{ $post->excerpt }}</p>
+            <div class="post-card-meta">
+                <span><i class="bi bi-calendar-event"></i>{{ $post->activity_date->format('d/m/Y') }}</span>
+                <span><i class="bi bi-people"></i>{{ $post->authors->pluck('name')->join(', ') }}</span>
+            </div>
+        </div>
+    </article>
 </div>

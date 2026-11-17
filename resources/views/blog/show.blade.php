@@ -1,37 +1,46 @@
 @extends('layouts.app')
-@section('title', $post->title)
+@section('title', $post->title . ' · Semana de Sistemas 2026')
 @section('content')
-<div class="container mt-4" style="max-width:860px">
-    <a href="{{ route('blog.index') }}" class="small">&larr; Volver a las entradas</a>
-    <span class="badge text-bg-primary ms-2">{{ $post->category->name }}</span>
-    <h1 class="mt-2">{{ $post->title }}</h1>
-    <p class="text-secondary">
-        Fecha de la actividad: {{ $post->activity_date->format('d/m/Y') }}
-        · Por {{ $post->authors->pluck('name')->join(' y ') }}
-    </p>
-    @if ($post->image_url)
-        <img src="{{ $post->image_url }}" class="img-fluid rounded mb-4 w-100" alt="{{ $post->title }}">
-    @endif
-    <div class="post-content">{{ $post->content }}</div>
-    @if ($post->reflection)
-        <div class="card border-primary mt-4"><div class="card-body">
-            <h5 class="text-primary">Reflexión</h5>
-            <div class="post-content">{{ $post->reflection }}</div>
-        </div></div>
-    @endif
-    @php $gallery = $post->images->where('type', 'galeria'); @endphp
-    @if ($gallery->count())
-        <h4 class="mt-5">Galería y evidencias</h4>
-        <div class="row g-3 gallery">
-            @foreach ($gallery as $img)
-                <div class="col-6 col-md-4">
-                    <figure class="m-0">
-                        <img src="{{ $img->url }}" class="rounded" alt="{{ $img->caption ?? 'Evidencia' }}">
-                        <figcaption class="small text-muted">{{ $img->caption }} @if($img->user)<em>({{ $img->user->name }})</em>@endif</figcaption>
-                    </figure>
+<article class="section pb-0">
+    <div class="container">
+        <div class="article">
+            <a class="back" href="{{ route('blog.index') }}"><i class="bi bi-arrow-left"></i> Volver a las entradas</a>
+            <h1>{{ $post->title }}</h1>
+            <div class="byline">
+                <span class="tag">{{ $post->category->name }}</span>
+                <span><i class="bi bi-calendar-event"></i>{{ $post->activity_date->format('d/m/Y') }}</span>
+                <span class="avatars">
+                    @foreach ($post->authors as $a)<span class="avatar" title="{{ $a->name }}">{{ mb_strtoupper(mb_substr($a->name, 0, 1)) }}</span>@endforeach
+                    <span>{{ $post->authors->pluck('name')->join(' y ') }}</span>
+                </span>
+            </div>
+
+            @if ($post->image_url)
+                <figure class="article-hero"><img src="{{ $post->image_url }}" alt="{{ $post->title }}"></figure>
+            @endif
+
+            <div class="prose">{{ $post->content }}</div>
+
+            @if ($post->reflection)
+                <aside class="reflection">
+                    <h2><i class="bi bi-chat-quote"></i> Nuestra reflexión</h2>
+                    <div class="prose">{{ $post->reflection }}</div>
+                </aside>
+            @endif
+
+            @php $gallery = $post->images->where('type', 'galeria'); @endphp
+            @if ($gallery->count())
+                <h2 class="h4 mt-5 mb-0">Galería</h2>
+                <div class="gallery">
+                    @foreach ($gallery as $img)
+                        <a class="gallery-item" href="{{ $img->url }}" data-lightbox data-caption="{{ $img->caption }}">
+                            <img src="{{ $img->url }}" alt="{{ $img->caption ?: 'Foto de la actividad' }}" loading="lazy">
+                            @if ($img->caption)<span>{{ $img->caption }}</span>@endif
+                        </a>
+                    @endforeach
                 </div>
-            @endforeach
+            @endif
         </div>
-    @endif
-</div>
+    </div>
+</article>
 @endsection
