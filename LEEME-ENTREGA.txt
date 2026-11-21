@@ -1,0 +1,27 @@
+BLOG SEMANA DE SISTEMAS 2026 - Laravel 12 + PostgreSQL
+
+REQUISITOS: PHP 8.2 o superior (con pdo_pgsql, zip, intl), Composer y PostgreSQL.
+
+INSTALACION
+1. Descomprimir el zip y entrar a la carpeta del proyecto:
+   cd blog-ss2026
+2. Instalar dependencias y preparar el entorno:
+   composer install
+   cp .env.example .env
+   php artisan key:generate
+3. Editar .env con los datos de su PostgreSQL:
+   DB_CONNECTION=pgsql
+   DB_HOST=127.0.0.1
+   DB_PORT=5432
+   DB_DATABASE=blog_ss2026
+   DB_USERNAME=su_usuario
+   DB_PASSWORD=su_clave
+4. Crear la base de datos y cargar los datos del blog (NO ejecutar php artisan migrate):
+   createdb -U su_usuario blog_ss2026
+   psql -U su_usuario -d blog_ss2026 -f entrega/respaldo_bd.sql
+5. Enlazar las imagenes (ya vienen en storage/app/public) y encender:
+   php artisan storage:link
+   php artisan serve
+6. Abrir http://localhost:8000
+   Panel de administracion: http://localhost:8000/login
+   (usuario y clave: indicados en la entrega)
